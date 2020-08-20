@@ -13,24 +13,32 @@
 visudo
 <username> ALL=(ALL) NOPASSWD:ALL
 
-## base yum installs
-sudo yum install -y yum-utils conntrack socat lvm2 && sudo yum update
-
-## install docker
-sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-sudo yum install -y docker-ce docker-ce-cli containerd.io
-sudo systemctl start docker
-sudo systemctl enable docker
-sudo usermod -aG docker $USER && newgrp docker
-
-## install kubectl
-curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
-chmod +x ./kubectl
-sudo mv ./kubectl /usr/local/bin/kubectl
-sudo systemctl enable kubelet
-
 ## switch to root
 sudo su
+
+## base yum installs
+yum install -y yum-utils conntrack socat lvm2 && sudo yum update
+
+## install docker
+yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+yum install -y docker-ce docker-ce-cli containerd.io
+systemctl start docker
+systemctl enable docker
+usermod -aG docker $USER && newgrp docker
+
+## install kubelet, kubeadm, kubectl
+cat <<EOF > /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+enabled=1
+gpgcheck=1
+repo_gpgcheck=1
+gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+EOF
+yum install -y kubelet, kubectl, kubeadm
+systemctl enable kubelet
+systemctl start kubelet
 
 ## set docker daemon
 cat > /etc/docker/daemon.json <<EOF
@@ -100,4 +108,5 @@ minikube config set driver none
 mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
 

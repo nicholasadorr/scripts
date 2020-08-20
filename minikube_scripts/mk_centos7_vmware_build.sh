@@ -1,16 +1,13 @@
 # Building Minikube Lab on CentOS7 VM in VMWare Workstation 15.5
 
 ## To download VMWare Workstation Player for Windows:
-#
 #  https://www.vmware.com/go/getplayer-win
 
 ## To download VMWare Workstation Player for Linux:
-#
 #  https://www.vmware.com/go/getplayer-linux
 
 ## prior to vm launch
-#
-# Go to Virtual Machine Settings > Hardware > Processors > Virtualization engine then enable Virtualize Intel VT-x/EPT or AMD-V/RVI
+#  Go to Virtual Machine Settings > Hardware > Processors > Virtualization engine then enable Virtualize Intel VT-x/EPT or AMD-V/RVI
 
 ## create sudo privs
 visudo

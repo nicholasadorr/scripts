@@ -91,6 +91,33 @@ systemctl restart containerd
 ## exit root
 exit
 
+## install crictl (CLI for CRI-compatible container runtimes)
+VERSION="v1.17.0"
+curl -L https://github.com/kubernetes-sigs/cri-tools/releases/download/$VERSION/crictl-${VERSION}-linux-amd64.tar.gz --output crictl-${VERSION}-linux-amd64.tar.gz
+sudo tar zxvf crictl-$VERSION-linux-amd64.tar.gz -C /usr/local/bin
+rm -f crictl-$VERSION-linux-amd64.tar.gz
+
+## install golang
+VERSION="1.15"
+curl -O https://dl.google.com/go/go${VERSION}.linux-amd64.tar.gz
+tar -xvf go$VERSION.linux-amd64.tar.gz
+sudo chown -R root:root ./go
+sudo mv go /usr/local
+mkdir -p ~/go/src/hello && cd ~/go/src/
+export PATH=$PATH:/usr/local/go/bin
+echo export PATH=$PATH:/usr/local/go/bin >> ~/.bashrc
+
+## install helm
+cd ~/go/src/
+curl -Lo helm-v3.0.0.tar.gz https://github.com/helm/helm/archive/v3.0.0.tar.gz
+tar -zvxf helm-v3.0.0.tar.gz
+rm -f helm-v3.0.0.tar.gz
+cd helm-3.0.0
+make
+sudo mv bin/helm /usr/bin/
+cd ~/
+sudo rm -rf go*
+
 ## install minikube
 curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
 chmod +x minikube

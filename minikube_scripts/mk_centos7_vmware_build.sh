@@ -9,9 +9,26 @@
 ## prior to vm launch
 #  Go to Virtual Machine Settings > Hardware > Processors > Virtualization engine then enable Virtualize Intel VT-x/EPT or AMD-V/RVI
 
+## image used for testing
+#  CentOS-7-x86_64-Everything-2003.iso
+
 ## create sudo privs
 visudo
 <username> ALL=(ALL) NOPASSWD:ALL
+
+## sanity installs
+echo "colo desert" > ~/.vimrc
+cat >> .bashrc << EOL
+alias kg="kubectl get"
+alias kga="kubectl get all"
+alias kcre="kubectl create"
+alias kapp="kubectl apply"
+alias kdel="kubectl delete"
+alias kdes="kubectl describe"
+alias klogs="kubectl logs"
+alias watchk="watch -d kubectl get all"
+EOL
+source .bashrc
 
 ## switch to root
 sudo su

@@ -76,7 +76,7 @@ source .bashrc
 echo "$(hostname -i) k8smaster" >> /etc/hosts
 
 ## initial kubernetes control-plane
-kubeadm init --pod-network-cidr 192.168.0.0/16 --v=5
+sudo kubeadm init --pod-network-cidr 192.168.0.0/16 --v=5
 
 ## apply config file to .kube user location
 mkdir -p $HOME/.kube

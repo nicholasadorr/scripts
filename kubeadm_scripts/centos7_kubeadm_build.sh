@@ -76,7 +76,7 @@ source .bashrc
 echo "$(hostname -i) k8smaster" >> /etc/hosts
 
 ## initial kubernetes control-plane
-sudo kubeadm init --pod-network-cidr 192.168.0.0/16 --v=5
+sudo kubeadm init --pod-network-cidr 192.168.0.0/16 --v=5 | tee kubeadm-init.out
 
 ## apply config file to .kube user location
 mkdir -p $HOME/.kube
@@ -97,23 +97,13 @@ kubectl apply -f calico.yaml
 # docker run --privileged -v /lib/modules:/lib/modules --net=host k8s.gcr.io/kube-proxy-amd64:v1.15.1 kube-proxy --cleanup
 
 
-### On worker nodes
+### For worker nodes
 
-## (on master node) view and copy ip
-hostname -i
+## (on master node) copy kubeadm join command created with tokens
+cat kubeadm-init.out
 
-## (on worker node) add ip to /etc/hosts
-sudo su
-echo "<output of hostname -i> k8smaster" >> /etc/hosts
-
-## (on master node) create and copy secure way to link nodes with discovery-token-ca-cert-hash
-openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null | openssl dgst -sha256 -hex | sed 's/ˆ.* //'
-
-## (on master node) view and copy kubeadm token
-sudo kubeadm token list
-
-## (on worker node) join node into cluster
-kubeadm join k8smaster:6443--token <kubeadm token> --discovery-token-ca-cert-hash sha256:<hash token> --v=5
+## (on worker node) paste kubedm join command to join node with cluster
+sudo kubeadm join <master node ip>:6443 --token <kubeadm token> --discovery-token-ca-cert-hash <hash token>
 
 ## (on master node) test new worker node connection
 kubectl get nodes

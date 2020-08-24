@@ -113,7 +113,7 @@ openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outfor
 sudo kubeadm token list
 
 ## (on worker node) join node into cluster
-kubeadm join --token <kubeadm token> k8smaster:6443 --discovery-token-ca-cert-hash sha256:<hash token> --v=5
+kubeadm join k8smaster:6443--token <kubeadm token> --discovery-token-ca-cert-hash sha256:<hash token> --v=5
 
 ## (on master node) test new worker node connection
 kubectl get nodes

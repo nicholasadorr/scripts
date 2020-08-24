@@ -1,10 +1,10 @@
 # Building K8s lab with kubeadm and minimum requirements on AWS Centos7 ami
 
-### on master node/s first
+### On all nodes
 
 ## sanity updates
 echo "colo desert" > ~/.vimrc
-cat >> .bashrc << EOL
+cat >> ~/.bashrc << EOL
 alias kg="kubectl get"
 alias kga="kubectl get all"
 alias kcre="kubectl create"
@@ -14,8 +14,7 @@ alias kdes="kubectl describe"
 alias klogs="kubectl logs"
 alias watchk="watch -d kubectl get all"
 EOL
-source .bashrc
-
+source ~/.bashrc
 
 ## install essential packages
 sudo yum -y install yum-utils vim wget bash-completion git && sudo yum -y update
@@ -61,20 +60,23 @@ yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
 systemctl enable --now kubelet
 systemctl daemon-reload
 systemctl restart kubelet
+kubeadm config images pull
 echo "done installing kubeadm, kubelet, kubectl"
 echo
-
-## add ip address to /etc/hosts
-echo "$(hostname -i) k8smaster" >> /etc/hosts
-
-## initial kubernetes control-plane
-kubeadm config images pull
-kubeadm init --pod-network-cidr 192.168.0.0/16
 
 ## switch to user
 exit
 echo "source <(kubectl completion bash)" >> ~/.bashrc
 source .bashrc
+
+
+### On master node only
+
+## add ip address to /etc/hosts
+echo "$(hostname -i) k8smaster" >> /etc/hosts
+
+## initial kubernetes control-plane
+kubeadm init --pod-network-cidr 192.168.0.0/16
 
 ## apply config file to .kube user location
 mkdir -p $HOME/.kube
@@ -95,9 +97,7 @@ kubectl apply -f calico.yaml
 # docker run --privileged -v /lib/modules:/lib/modules --net=host k8s.gcr.io/kube-proxy-amd64:v1.15.1 kube-proxy --cleanup
 
 
-### on secondary worker nodes
-
-## repeat all steps from master node up until running kubeadm commands
+### On worker nodes
 
 ## (on master node) view and copy ip
 hostname -i

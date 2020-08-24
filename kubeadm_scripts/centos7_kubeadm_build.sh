@@ -18,7 +18,7 @@ source .bashrc
 
 
 ## install essential packages
-sudo yum -y install yum-utils vim wget bash-completion && sudo yum -y update
+sudo yum -y install yum-utils vim wget bash-completion git && sudo yum -y update
 echo "done installing essentials"
 echo
 

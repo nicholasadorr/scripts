@@ -15,6 +15,8 @@ alias klogs="kubectl logs"
 alias watchk="watch -d kubectl get all"
 EOL
 source ~/.bashrc
+echo "source <(kubectl completion bash)" >> ~/.bashrc
+
 
 ## install essential packages
 sudo yum -y install yum-utils vim wget bash-completion git && sudo yum -y update
@@ -66,9 +68,7 @@ echo
 
 ## switch to user
 exit
-echo "source <(kubectl completion bash)" >> ~/.bashrc
-source .bashrc
-
+source ./bashrc
 
 ### On master node only
 
@@ -88,6 +88,7 @@ echo
 
 # using calico
 wget https://docs.projectcalico.org/manifests/calico.yaml
+# remove comments for lines 3579-3580 re: CALICO_IPV4POOL_CIDR 
 kubectl apply -f calico.yaml
 
 # using kube-router (install then remove kube-proxy cleanup iptables)

@@ -5,6 +5,7 @@
 ## sanity updates
 echo "colo desert" > ~/.vimrc
 cat >> ~/.bashrc << EOL
+alias k="kubectl"
 alias kg="kubectl get"
 alias kga="kubectl get all"
 alias kcre="kubectl create"
